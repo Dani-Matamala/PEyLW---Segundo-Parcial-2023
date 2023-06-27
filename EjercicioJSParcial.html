@@ -16,9 +16,9 @@ Released for free under a Creative Commons Attribution 2.5 License
     // Ud. puede usar o no esta variable. No es obligatorio.
     console.log("entro al script");
     var votantesRegistrados = [];
-    var votosKang = 0;
-    var votosKodos = 0;
-    var votosBlanco = 0;
+    var votosKang = [];
+    var votosKodos = [];
+    var votosBlanco = [];
     var mesaCerrada = false;
 
     function registrarVoto() {
@@ -30,11 +30,8 @@ Released for free under a Creative Commons Attribution 2.5 License
       reiniciarEstilos();
 
       var dni = document.getElementById('txDNI').value;
-      console.log(dni);
       var voto = document.getElementById('txCandidato').value;
-      console.log(voto)
       var sexo = document.getElementById('txSexo').value.toUpperCase();
-      console.log(sexo);
 
       if (!validarCamposCompletos(dni, voto, sexo)) {
         alert('Todos los campos del formulario deben estar completos.');
@@ -55,28 +52,31 @@ Released for free under a Creative Commons Attribution 2.5 License
         return;
       }
 
-      if (votantesRegistrados.includes(dni)) {
-        alert('Esta persona ya emitió su voto');
-        return;
+      if(votantesRegistrados.find(voto => voto === dni)){
+        votosKang = votosKang.filter(voto => voto !== dni);
+        //ó
+        votosKodos = votosKodos.filter(voto => voto !== dni);
+        //Ó
+        votosBlanco = votosBlanco.filter(voto => voto !== dni);
+      } else {
+        votantesRegistrados.push(dni);
+        agregarVotante(dni);
       }
-
-      votantesRegistrados.push(dni);
-      agregarVotante(dni);
 
       switch (voto.toUpperCase()) {
         case 'KODOS':
-          votosKodos++;
-          document.getElementById('ResultadosKodos').textContent = votosKodos;
+          votosKodos.push(dni);
           break;
         case 'KANG':
-          votosKang++;
-          document.getElementById('ResultadosKang').textContent = votosKang;
+          votosKang.push(dni);
           break;
         case 'BLANCO':
-          votosBlanco++;
-          document.getElementById('ResultadosBlanco').textContent = votosBlanco;
+          votosBlanco.push(dni);
           break;
       }
+      document.getElementById('ResultadosKodos').textContent = votosKodos.length;
+      document.getElementById('ResultadosKang').textContent = votosKang.length;
+      document.getElementById('ResultadosBlanco').textContent = votosBlanco;
 
       limpiarFormulario();
     }
@@ -89,7 +89,7 @@ Released for free under a Creative Commons Attribution 2.5 License
 
       mesaCerrada = true;
       var ganador = '';
-      var diferenciaVotos = Math.abs(votosKang - votosKodos);
+      var diferenciaVotos = Math.abs(votosKang.length - votosKodos.length);
 
       if (votosKang > votosKodos) {
         ganador = 'KANG';
@@ -99,9 +99,10 @@ Released for free under a Creative Commons Attribution 2.5 License
         document.getElementById('imagenGanador').src = 'images/VoteKodos.png';
       } else {
         ganador = 'Empate';
+        document.getElementById('imagenGanador').style.display = 'none';
       }
 
-      document.getElementById('ganador').textContent = 'Ganó ' + ganador + ' por ' + diferenciaVotos + ' votos!';
+      document.getElementById('ganador').textContent = (ganador != 'Empate' ? ' Ganó ' + ganador + ' por ' + diferenciaVotos + ' votos!' : 'Empate!!!');
       document.getElementById('dResultados').style.display = 'block';
 
       bloquearBotones();
@@ -153,8 +154,7 @@ Released for free under a Creative Commons Attribution 2.5 License
     }
 
     function bloquearBotones() {
-      document.getElementById('send').reset();
-      document.getElementsByTagName('form').style.pointerEvents = 'none';
+      document.getElementById('form').style.display = 'none';
     }
   </script>
 
@@ -175,7 +175,7 @@ Released for free under a Creative Commons Attribution 2.5 License
   </div>
   <div id="content">
 
-    <form>
+    <form id="form">
       <table style="padding: 10px;">
         <tr>
           <td>Candidato:</td>
