@@ -29,9 +29,12 @@ Released for free under a Creative Commons Attribution 2.5 License
 
       reiniciarEstilos();
 
-      var dni = document.getElementById('txDni').value;
-      var voto = document.getElementById('txVoto').value;
+      var dni = document.getElementById('txDNI').value;
+      console.log(dni);
+      var voto = document.getElementById('txCandidato').value;
+      console.log(voto)
       var sexo = document.getElementById('txSexo').value.toUpperCase();
+      console.log(sexo);
 
       if (!validarCamposCompletos(dni, voto, sexo)) {
         alert('Todos los campos del formulario deben estar completos.');
@@ -53,7 +56,7 @@ Released for free under a Creative Commons Attribution 2.5 License
       }
 
       if (votantesRegistrados.includes(dni)) {
-        alert('Esta persona ya emitió su voto. El fraude está mal claro que sí');
+        alert('Esta persona ya emitió su voto');
         return;
       }
 
@@ -78,7 +81,7 @@ Released for free under a Creative Commons Attribution 2.5 License
       limpiarFormulario();
     }
 
-    function cerrarMesa() {
+      function cerrarMesa() {
       if (mesaCerrada) {
         alert('La mesa electoral ya ha sido cerrada.');
         return;
@@ -90,16 +93,15 @@ Released for free under a Creative Commons Attribution 2.5 License
 
       if (votosKang > votosKodos) {
         ganador = 'KANG';
-        document.getElementById('imagenGanador').src = 'imagen_kang.png';
+        document.getElementById('imagenGanador').src = 'images/VoteKang.png';
       } else if (votosKodos > votosKang) {
         ganador = 'KODOS';
-        document.getElementById('imagenGanador').src = 'imagen_kodos.png';
+        document.getElementById('imagenGanador').src = 'images/VoteKodos.png';
       } else {
         ganador = 'Empate';
       }
 
-      var ganador = document.createElement('p');
-      ganador.textContent = 'Ganó ' + ganador + ' por ' + diferenciaVotos + ' votos!';
+      document.getElementById('ganador').textContent = 'Ganó ' + ganador + ' por ' + diferenciaVotos + ' votos!';
       document.getElementById('dResultados').style.display = 'block';
 
       bloquearBotones();
@@ -144,15 +146,15 @@ Released for free under a Creative Commons Attribution 2.5 License
     }
 
     function limpiarFormulario() {
-      document.getElementById('txDni').value = '';
-      document.getElementById('txVoto').value = 'KODOS';
+      document.getElementById('txDNI').value = '';
+      document.getElementById('txCandidato').value = 'KODOS';
       document.getElementById('txSexo').value = '';
       reiniciarEstilos();
     }
 
     function bloquearBotones() {
-      document.getElementsByTagName('form').reset();
-      // document.getElementsByTagName('form').style.pointerEvents = 'none';
+      document.getElementById('send').reset();
+      document.getElementsByTagName('form').style.pointerEvents = 'none';
     }
   </script>
 
@@ -189,16 +191,19 @@ Released for free under a Creative Commons Attribution 2.5 License
         </tr>
         <tr>
           <td>&nbsp;</td>
-          <td><input type="button" value="Registrar" onclick="return registrarVoto()">&nbsp;<input type="button" value="Cierre de mesa" onclick="return cerrarMesa()"></td>
+          <td id="send"><input type="button" value="Registrar" onclick="return registrarVoto()">&nbsp;<input type="button" value="Cierre de mesa" onclick="return cerrarMesa()"></td>
         </tr>
 
       </table>
     </form>
     <p></p>
 
-    <div id="dResultados" style="display: nosne;">
+    <div id="dResultados" style="display: none;">
       <h2>Resultados:</h2>
       <!-- Ingrese aquí quien gano, por cuantos votos, y su imagen-->
+      <p id="ganador"></p>
+      <img id="imagenGanador" src="" alt="imgagen del candidato ganador">
+      
     </div>
 
 
